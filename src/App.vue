@@ -1,6 +1,6 @@
 <template>
   <div class="app">
-    <input type="text" v-model="display" class="app__display">
+    <input type="text" v-model="display" class="app__display" readonly>
     <div class="panel app__panel ">
       <button
         v-for="(index, key) in 10"
@@ -9,6 +9,7 @@
       >
         {{key}}
       </button>
+      <button @click="clean">clean</button>
       <button @click="event('prompt')"  id="prompt">=</button>
     </div>
     <div class="operators">
@@ -33,6 +34,11 @@ export default {
     }
   },
   methods: {
+    clean(){
+      this.oneValue = ''
+      this.display = ''
+      this.lastEvent = ''
+    },
     addNumber(value){
       this.display += String(value)
     },
@@ -44,8 +50,6 @@ export default {
       } else {
         this[e]()
       }
-
-
     },
     prompt(){
       switch (this.lastEvent) {
@@ -82,10 +86,44 @@ export default {
     multiplication(){
       this.display = String(Number(this.display) * Number(this.oneValue))
       this.oneValue = ''
+    },
+    onKeyDown(e) {
+      const events = [
+        {
+          key: '+',
+          event: 'addition'
+        },
+        {
+          key: '*',
+          event: 'multiplication'
+        },
+        {
+          key: '/',
+          event: 'division'
+        },
+        {
+          key: '=',
+          event: 'prompt'
+        },
+        {
+          key: '-',
+          event: 'subtraction'
+        }
+      ]
+      if (!isNaN(e.key)) {
+        this.display += e.key
+      }
+      events.forEach(item => {
+        if (item.key === e.key) {
+          this.event(item.event)
+        }
+      })
+
+
     }
   },
-  components: {
-
+  created() {
+    document.addEventListener('keydown', this.onKeyDown)
   }
 }
 </script>
