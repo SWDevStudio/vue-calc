@@ -1,6 +1,6 @@
 <template>
   <div class="app">
-    <input type="text" v-model="display" class="app__display" readonly>
+    <input type="text" v-model="display" class="app__display" readonly @keydown.enter="prompt">
     <div class="panel app__panel ">
       <button
         v-for="(index, key) in 10"
@@ -34,6 +34,9 @@ export default {
     }
   },
   methods: {
+    focus(){
+      console.log(this)
+    },
     clean(){
       this.oneValue = ''
       this.display = ''
@@ -118,12 +121,11 @@ export default {
           this.event(item.event)
         }
       })
-
-
     }
   },
-  created() {
+  mounted() {
     document.addEventListener('keydown', this.onKeyDown)
+    document.querySelector('.app__display').focus()
   }
 }
 </script>
